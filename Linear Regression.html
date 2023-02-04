@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+</html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Predictive Analytics - Linear Regression </title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <!-- Bootstrap CSS-->
+  <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+  <!-- Font Awesome CSS-->
+  <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css">
+  <!-- Google fonts - Roboto-->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,300,700,400italic">
+  <!-- owl carousel-->
+  <link rel="stylesheet" href="vendor/owl.carousel/assets/owl.carousel.css">
+  <link rel="stylesheet" href="vendor/owl.carousel/assets/owl.theme.default.css">
+  <!-- theme stylesheet-->
+  <link rel="stylesheet" href="css/style.default.css" id="theme-stylesheet">
+  <!-- Custom stylesheet - for your changes-->
+  <link rel="stylesheet" href="css/custom.css">
+  <!-- Favicon-->
+  <link rel="shortcut icon" href="img/favicon.png">
+  <!-- Tweaks for older IEs--><!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+</head>
+<body>
+  <div id="all">
+    <div class="container-fluid">
+      <div class="row row-offcanvas row-offcanvas-left"> 
+        <!--   *** SIDEBAR ***-->
+        <div id="sidebar" class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas">
+          <div class="sidebar-content">
+            <h1 class="sidebar-heading"> <a href="index.html">Miranda McWatters</a></h1>
+            <p class="sidebar-p">Hi i'm Miranda, a data analyst. I created this website to share my work, and to help me easily reference code i've used in the past.</p>
+            <ul class="sidebar-menu">
+                <!-- Link-->
+                <li class="sidebar-item"><a href="index.html" class="sidebar-link active">Home</a></li>
+                <!-- Link-->
+                <li class="sidebar-item"><a href="about.html" class="sidebar-link">About Me</a></li>
+                <!-- Link-->
+                <li class="sidebar-item"><a href="contact.html" class="sidebar-link">Get in touch</a></li>
+            </ul>
+            <p class="social"><a href="#" data-animate-hover="pulse" class="external facebook"><i class="fa fa-facebook"></i></a><a href="#" data-animate-hover="pulse" class="external gplus"><i class="fa fa-google-plus"></i></a><a href="#" data-animate-hover="pulse" class="external twitter"><i class="fa fa-twitter"></i></a><a href="#" title="" class="external instagram"><i class="fa fa-instagram"></i></a><a href="#" data-animate-hover="pulse" class="email"><i class="fa fa-envelope"></i></a></p>
+            <div class="copyright text-center text-md-left">
+              <p class="credit">&copy;2023 Miranda McWatters | Template by <a href="http://bootstrapious.com/portfolio-themes" class="external">Bootstrapious.com</a></p>
+              <!-- Please do not remove the backlink to us, unless you support the development at http://bootstrapious.com/donate. It is part of the license conditions. Thanks for understanding :)        -->
+            </div>
+          </div>
+        </div>
+        <!--   *** SIDEBAR END ***  -->
+        <!--   *** DETAIL ***-->
+        <div class="col-md-9 col-lg-9 content-column white-background">
+          <div class="small-navbar d-flex d-md-none">
+            <button type="button" data-toggle="offcanvas" class="btn btn-outline-primary"> <i class="fa fa-align-left mr-2"></i>Menu</button>
+            <h1 class="small-navbar-heading"> <a href="index.html">Creative </a></h1>
+          </div>
+          <div class="row">
+            <div class="col-lg-9">
+              <div class="content-column-content">
+                 <h1>Linear Regression</h1>
+        <p>Predicting Sales</p>
+        <pre class="r">
+            <code>
+        p5.df=read.csv("p5.csv")
+        head(p5.df)
+
+        CRIM ZN INDUS CHAS   NOX    RM  AGE    DIS RAD TAX PTRATIO      B LSTAT sales
+        1 0.00632 18  2.31    0 0.538 6.575 65.2 4.0900   1 296    15.3 396.90  4.98  3400
+        2 0.02731  0  7.07    0 0.469 6.421 78.9 4.9671   2 242    17.8 396.90  9.14  3160
+        3 0.02729  0  7.07    0 0.469 7.185 61.1 4.9671   2 242    17.8 392.83  4.03  4470
+        4 0.03237  0  2.18    0 0.458 6.998 45.8 6.0622   3 222    18.7 394.63  2.94  4340
+        5 0.06905  0  2.18    0 0.458 7.147 54.2 6.0622   3 222    18.7 396.90  5.33  4620
+        6 0.02985  0  2.18    0 0.458 6.430 58.7 6.0622   3 222    18.7 394.12  5.21  3870
+
+        training=sample(p5.df$CRIM,300)
+        valid=sample(setdiff(p5.df$CRIM,training))
+        reg=lm(sales~., data=p5.df[-c(2,4)],subset = training, na.action = na.exclude)
+        reg
+        par(mfcol=c(2,2))
+        plot(reg)
+
+            </code>
+        </pre>
+        <p><img src="/Users/mirandamcwatters/Desktop/Portfolio/fitted values and leverage.png" width="300" hight="1000" class="img-responsive"></p>
+        <pre class = "r">
+            <code>
+        pred_t= predict(reg,na.action = na.pass)
+        pred_v=predict(reg, newdata = p5.df[valid,-c(2,4)],na.action=na.pass)
+        accuracy(pred_t, p5.df[training,]$sales)
+        accuracy(pred_v, p5.df[valid,]$sales)
+        par(mfrow = c(2,2 ))
+        boxplot(residuals(reg),col = "gold",ylim=c(-3000,4000),xlab="Training Residuals")
+        resid_v=p5.df[valid,14]-pred_v
+        boxplot(resid_v,col = "darkgreen",ylim=c(-3000,4000),xlab="Validation Residuals")
+
+        p5.df = p5.df[!is.na(p5.df$sales), ]
+        training=sample(p5.df$CRIM,300)
+        valid=sample(setdiff(p5.df$CRIM,training))
+        reg=lm(sales~., data=p5.df[-c(2,4)],subset = training)
+        pred_v=predict(reg, newdata = p5.df[valid,-c(2,4)])
+        library(gains)
+        gain=gains(p5.df[valid,]$sales[!is.na(pred_v)],pred_v[!is.na(pred_v)])
+        gain
+
+        Depth                            Cume   Cume Pct                    Mean
+        of           Cume     Mean      Mean   of Total    Lift   Cume      Model
+        File     N      N      Resp      Resp      Resp    Index  Lift      Score
+        -------------------------------------------------------------------------
+        12     8      8   4413.75   4413.75      18.7%     152    152   4801.07
+        26     9     17   4412.22   4412.94      39.8%     152    152   4352.69
+        42    10     27   3400.00   4037.78      57.9%     117    139   3441.02
+        49     5     32   3196.00   3906.25      66.4%     110    135   3290.24
+        62     8     40   3580.00   3841.00      81.6%     124    133   3081.89
+        71     6     46   3508.33   3797.61      92.7%     121    131   2628.37
+        80     6     52    656.67   3435.19      94.8%      23    119   1569.25
+        94     9     61    380.00   2984.43      96.6%      13    103    153.56
+        100     4     65   1582.50   2898.15     100.0%      55    100  -6487.96
+        NA    NA     NA        NA        NA        NA%      NA     NA        NA
+
+
+        options(scipen = 999)
+        sales=p5.df[valid,]$sales[!is.na(p5.df[valid,]$sales)]
+        par(mfcol=c(2,1))
+        plot(c(0, gain$cume.pct.of.total*sum(sales))-c(0,gain$cume.obs),xlab = "#cases", ylab = "Cumulative Price", main = "Lift Chart", type ="l") 
+        lines(c(0,sum(sales)) ~ c(0, dim(p5.df[valid,])[1]),col="gray", lty=2)
+        barplot(gain$mean.resp/mean(sales), names.arg = gain$depth, xlab = "Percentile", ylab = "Mean Response", mail = "Decile-wise lift chart")
+            </code>
+        </pre>
+        <p><img src="/Users/mirandamcwatters/Desktop/Portfolio/lift chart.png" width="300" hight="1000" class="img-responsive"></p>
+                            </div>
+                        </div>
+                    </div>           
+                
+  <!-- JavaScript files-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/popper.js/umd/popper.min.js"> </script>
+  <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+  <script src="vendor/jquery.cookie/jquery.cookie.js"> </script>
+  <script src="vendor/owl.carousel/owl.carousel.min.js"></script>
+  <script src="vendor/masonry-layout/masonry.pkgd.min.js"></script>
+  <script src="js/front.js"></script>
+</body>
